@@ -33,13 +33,14 @@ class TSClient {
 
 			outToServer.writeBytes(request + '\n');
 			response = inFromServer.readLine();
+			
+			t4 = System.currentTimeMillis(); // local time
 
 			t2 = Long.parseLong(response.split(";")[0]);
 			t3 = Long.parseLong(response.split(";")[1]);
-			t4 = System.currentTimeMillis(); // local time
 			theta = (t2 - t1)/2 + (t3 - t4)/2;
 
-			rtt = t4 - t3 + t2 - t1;
+			rtt = t4 - t1;
 
 			if(rtt < bestRTT) {
 				bestRTT = rtt;
