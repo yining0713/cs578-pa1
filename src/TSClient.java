@@ -20,6 +20,10 @@ class TSClient {
 		long bestRTT = 1000000;
 		long bestTheta = 0;
 
+		/* 
+		* According to the specification of NTP in the textbook, we want to get
+		* 8 pairs of theta and delta and get the minimal delay
+		*/  
 		for (int i=0; i < 8; i++){
 			Socket clientSocket = new Socket(host, 15614);
 			DataOutputStream outToServer = new DataOutputStream(
@@ -35,11 +39,15 @@ class TSClient {
 			response = inFromServer.readLine();
 			
 			t4 = System.currentTimeMillis(); // local time
-
+			
+			//parsing the response
 			t2 = Long.parseLong(response.split(";")[0]);
 			t3 = Long.parseLong(response.split(";")[1]);
-			theta = (t2 - t1)/2 + (t3 - t4)/2;
 
+			// Calculating the offset T_b - T_a
+			theta = (t2 - t1)/2 + (t3 - t4)/2;
+			
+			// Calculating the round trip time
 			rtt = t4 - t1;
 
 			if(rtt < bestRTT) {
@@ -48,7 +56,6 @@ class TSClient {
 			}
 		
 			clientSocket.close();
-			Thread.sleep(2000);
 		}
 		System.out.println("REMOTE_TIME " + (t4 + bestTheta));
 
